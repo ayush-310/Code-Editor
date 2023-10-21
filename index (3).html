@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Code Editor</title>
+    <link rel="stylesheet" href="cd.css">
+    <script src="https://kit.fontawesome.com/e9ff82da41.js" crossorigin="anonymous"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="left">
+            <div class="row1">
+                <label>
+                    <span><i class="fa-brands fa-html5"></i>HTML</span>
+                    <span>
+                        <button id="lock-button-html">Lock</button>
+                        <button class="copy-button">Copy</button>
+                    </span>
+                </label>
+                <textarea id="html-code" class="text-to-copy" onkeyup="run('html-code')"></textarea>
+            </div>
+
+            <div class="row2">
+                <label>
+                    <span><i class="fa-brands fa-css3-alt"></i>CSS</span>
+                    <span>
+                        <button id="lock-button-css">Lock</button>
+                        <button class="copy-button">Copy</button>
+                    </span>
+                </label>
+                <textarea id="css-code" class="text-to-copy" onkeyup="run('css-code')"></textarea>
+            </div>
+
+            <div class="row3">
+                <label>
+                    <span><i class="fa-brands fa-square-js"></i>JavaScript</span>
+                    <span>
+                        <button id="lock-button-js">Lock</button>
+                        <button class="copy-button">Copy</button>
+                    </span>
+                </label>
+                <textarea id="js-code" class="text-to-copy" onkeyup="run('js-code')"></textarea>
+            </div>
+        </div>
+        <div class="right">
+            <div class="row4" style="margin-left: 17px;">
+                <label style="justify-content: flex-start;"><i class="fa-solid fa-play"></i>Output</label>
+                <iframe id="output"></iframe>
+            </div>
+        </div>
+    </div>
+    <script>
+        const lockButtonHTML = document.getElementById('lock-button-html');
+        const lockButtonCSS = document.getElementById('lock-button-css');
+        const lockButtonJS = document.getElementById('lock-button-js');
+
+        const editableContentHTML = document.getElementById('html-code');
+        const editableContentCSS = document.getElementById('css-code');
+        const editableContentJS = document.getElementById('js-code');
+
+        lockButtonHTML.addEventListener('click', function () {
+            toggleLock(editableContentHTML, lockButtonHTML);
+        });
+
+        lockButtonCSS.addEventListener('click', function () {
+            toggleLock(editableContentCSS, lockButtonCSS);
+        });
+
+        lockButtonJS.addEventListener('click', function () {
+            toggleLock(editableContentJS, lockButtonJS);
+        });
+
+        const copyButtons = document.querySelectorAll('.copy-button');
+        const textToCopy = document.querySelectorAll('.text-to-copy');
+
+        copyButtons.forEach((button, index) => {
+            button.addEventListener('click', function () {
+                textToCopy[index].select();
+                document.execCommand('copy');
+                // Optionally, you can provide a user-friendly message
+                alert('Text copied to clipboard: ' + textToCopy[index].value);
+            });
+        });
+
+        function toggleLock(editableContent, lockButton) {
+            const isEditable = !editableContent.readOnly;
+
+            if (isEditable) {
+                editableContent.readOnly = true;
+                lockButton.innerText = 'Unlock';
+            } else {
+                editableContent.readOnly = false;
+                lockButton.innerText = 'Lock';
+            }
+        }
+
+        function run(codeType) {
+            let htmlCode = document.getElementById("html-code").value;
+            let cssCode = document.getElementById("css-code").value;
+            let jsCode = document.getElementById("js-code").value;
+            let output = document.getElementById("output");
+
+            output.contentDocument.body.innerHTML = htmlCode + "<style>" + cssCode + "</style>";
+            output.contentWindow.eval(jsCode);
+        }
+    </script>
+</body>
+</html>
